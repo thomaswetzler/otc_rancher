@@ -113,12 +113,13 @@ topology_template:
           properties:
             architecture: "x86_64"
             type: linux
-            distribution: ubuntu
+            distribution: suse
+            version: 15.6
         scalable:
           properties:
-            min_instances: 1
-            max_instances: 1
-            default_instances: 1
+            min_instances: 3
+            max_instances: 5
+            default_instances: 3
         endpoint:
           properties:
             secure: true
