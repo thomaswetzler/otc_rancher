@@ -79,7 +79,7 @@ topology_template:
           properties:
             architecture: "x86_64"
             type: linux
-            distribution: ubuntu
+            distribution: OpenSUSE
         scalable:
           properties:
             min_instances: 1
