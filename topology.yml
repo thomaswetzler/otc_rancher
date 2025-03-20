@@ -13,15 +13,6 @@ imports:
 
 topology_template:
   node_templates:
-    Private:
-      metadata:
-        a4c_edit_x: "-172"
-        a4c_edit_y: "-82"
-      type: otc.nodes.Network.Private
-      properties:
-        admin_network: false
-        cidr: "10.0.0.0/24"
-        ip_version: 4
     Compute_Port_0:
       type: otc.nodes.Network.Port
       properties:
@@ -29,7 +20,7 @@ topology_template:
       requirements:
         - linksToPrivateLink:
             type_requirement: link
-            node: Private
+            node: application
             capability: tosca.capabilities.network.Linkable
             relationship: tosca.relationships.network.LinksTo
     Compute_2_Port_0:
@@ -39,7 +30,7 @@ topology_template:
       requirements:
         - linksToPrivateLink:
             type_requirement: link
-            node: Private
+            node: application
             capability: tosca.capabilities.network.Linkable
             relationship: tosca.relationships.network.LinksTo
     Compute_3_Port_0:
@@ -49,18 +40,9 @@ topology_template:
       requirements:
         - linksToPrivateLink:
             type_requirement: link
-            node: Private
+            node: application
             capability: tosca.capabilities.network.Linkable
             relationship: tosca.relationships.network.LinksTo
-    Private_2:
-      metadata:
-        a4c_edit_x: "-303"
-        a4c_edit_y: "-179"
-      type: otc.nodes.Network.Private
-      properties:
-        admin_network: false
-        cidr: "10.0.0.0/24"
-        ip_version: 4
     Compute_4_Port_0:
       type: otc.nodes.Network.Port
       properties:
@@ -68,7 +50,7 @@ topology_template:
       requirements:
         - linksToPrivate_2Link:
             type_requirement: link
-            node: Private_2
+            node: external
             capability: tosca.capabilities.network.Linkable
             relationship: tosca.relationships.network.LinksTo
         - linksToPublicLink:
@@ -214,4 +196,22 @@ topology_template:
         a4c_edit_y: "-205"
       type: otc.nodes.Network.Public
       properties:
+        ip_version: 4
+    external:
+      metadata:
+        a4c_edit_x: "-303"
+        a4c_edit_y: "-179"
+      type: otc.nodes.Network.Private
+      properties:
+        admin_network: false
+        cidr: "10.0.0.0/24"
+        ip_version: 4
+    application:
+      metadata:
+        a4c_edit_x: "-172"
+        a4c_edit_y: "-82"
+      type: otc.nodes.Network.Private
+      properties:
+        admin_network: false
+        cidr: "10.0.0.0/24"
         ip_version: 4
