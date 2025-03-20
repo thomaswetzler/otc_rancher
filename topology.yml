@@ -197,7 +197,7 @@ topology_template:
       type: otc.nodes.Network.Private
       properties:
         admin_network: false
-        cidr: "10.0.0.0/24"
+        cidr: "10.0.10.0/24"
         ip_version: 4
     application:
       metadata:
