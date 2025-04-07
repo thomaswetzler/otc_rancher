@@ -1,24 +1,35 @@
+# ####################################################################
+#
+# types.yml
+#
+# Definition of Catalog Entry of Cloud Create
+#
 # Copyright (C) 2022 Open Telekom Cloud - T-Systems International GmbH.
 # Use of this source code is governed by Apache 2 LICENSE that can be found in the LICENSE file.
+#
+# Changes
+# 07.04.2025    Thomas Wetzler   Initial file
+#
+# ####################################################################
 
 tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: thomas.nodes.WebServer.Rancher
-  template_version: 1.0.0
+  template_version: 0.0.1
   template_author: Thomas
 
-description: Apache webserver
+description: RKE2 for Rancher
 
 imports:
   - tosca-normative-types:1.0.0-ALIEN20
 
 node_types:
-  thomas.nodes.WebServer.Rancher:
+  thomas.nodes.rke2.Rancher:
     derived_from: tosca.nodes.SoftwareComponent
     metadata:
-      icon: /images/apache.png
+      icon: /images/rancher.png
     interfaces:
       Standard:
         create:
-          implementation: playbooks/create.yaml
+          implementation: playbooks/rke2-create.yaml
