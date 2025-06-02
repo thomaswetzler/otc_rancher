@@ -12,8 +12,9 @@
     - ansible_facts.services["firewalld.service"].status != "not-found"
   notify: "Restart {{ service_name }}"
 
-- name: Include task file network_manager_fix.yaml
-  ansible.builtin.include_tasks: network_manager_fix.yaml
+# Thw - Disable
+#- name: Include task file network_manager_fix.yaml
+#  ansible.builtin.include_tasks: network_manager_fix.yaml
 
 - name: Add server iptables rules
   ansible.builtin.include_tasks: iptables_rules.yml

@@ -1,0 +1,30 @@
+- name: Add Rancher and Jetstack repos
+  shell: |
+    helm repo add rancher-prime https://charts.rancher.com/server-charts/prime
+    helm repo add jetstack https://charts.jetstack.io
+    helm repo update
+  when: rke2_is_primary
+
+- name: Install cert-manager (nur auf primärem Node)
+  shell: |
+    helm install cert-manager jetstack/cert-manager \
+      --namespace cert-manager \
+      --version v1.13.3 \
+      --set installCRDs=true \
+      --create-namespace
+  when: rke2_is_primary
+
+- name: Wait for cert-manager rollout
+  shell: kubectl -n cert-manager rollout status deploy/cert-manager
+  when: rke2_is_primary
+
+- name: Install Rancher
+  shell: |
+    helm install rancher rancher-prime/rancher \
+      --namespace cattle-system \
+      --create-namespace \
+      --set replicas=3 \
+      --set bootstrapPassword=RancherOnRKE2 \
+      --version 2.11.1 \
+      --set hostname={{ rancher_hostname }}
+  when: rke2_is_primary

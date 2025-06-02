@@ -1,0 +1,4 @@
+token: {{ rke2_token }}
+{% if not rke2_is_primary %}
+server: https://{{ rke2_server_ip }}:9345
+{% endif %}

@@ -1,0 +1,19 @@
+- name: Install kubectl
+  ansible.builtin.include_tasks: kubectl.yaml
+
+- name: Install helm
+  ansible.builtin.include_tasks: helm.yaml
+
+- name: Install rke2
+  ansible.builtin.include_tasks: rke2.yaml
+
+- name: Create symlink for kubectl
+  file:
+    src: /var/lib/rancher/rke2/bin/kubectl
+    dest: /usr/local/bin/kubectl
+    state: link
+    force: yes
+
+- name: Install rancher
+  ansible.builtin.include_tasks: rancher.yaml
+

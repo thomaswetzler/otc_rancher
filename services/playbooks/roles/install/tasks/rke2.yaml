@@ -1,0 +1,81 @@
+- name: Create RKE2 config directory
+  file:
+    path: /etc/rancher/rke2
+    state: directory
+    mode: '0755'
+
+- name: Place RKE2 config.yaml
+  template:
+    src: config.yaml.j2
+    dest: /etc/rancher/rke2/config.yaml
+    mode: '0644'
+
+- name: Install RKE2
+  shell: curl -sfL https://get.rke2.io | sh -
+  args:
+    creates: /usr/local/bin/rke2
+
+- name: Enable rke2-server (nicht starten)
+  systemd:
+    name: rke2-server
+    enabled: true
+    state: stopped
+
+- name: Start rke2-server manuell (async)
+  shell: systemctl start rke2-server
+  register: rke2_start_trigger
+  ignore_errors: true
+
+- name: Show systemctl start return code
+  debug:
+    var: rke2_start_result.rc
+
+- name: Wait until rke2-server is active
+  shell: |
+    systemctl is-active rke2-server
+  register: rke2_status
+  until: rke2_status.stdout == "active"
+  retries: 30
+  delay: 10
+  ignore_errors: true  
+
+- name: Output rke2-server status if start failed
+  shell: systemctl status rke2-server.service
+  when: rke2_status.stdout != "active"
+  register: rke2_status_output
+  changed_when: false
+
+- name: Show systemctl status output
+  debug:
+    var: rke2_status_output.stdout_lines
+  when: rke2_status_output is defined
+
+- name: Output rke2-server logs if start failed
+  shell: journalctl -xeu rke2-server.service --no-pager --since "5 minutes ago"
+  when: rke2_status.stdout != "active"
+  register: rke2_journal_output
+  changed_when: false
+
+- name: Show journal output
+  debug:
+    var: rke2_journal_output.stdout_lines
+  when: rke2_journal_output is defined
+
+- name: Fail explicitly if rke2-server did not become active
+  fail:
+    msg: "rke2-server konnte nicht gestartet werden. Siehe vorherige Ausgabe."
+  when: rke2_status.stdout != "active"
+
+- name: Create .kube directory in home dir
+  file:
+    path: /root/.kube
+    state: directory
+    mode: '0700'
+
+- name: Link kubeconfig
+  file:
+    src: /etc/rancher/rke2/rke2.yaml
+    dest: /root/.kube/config
+    state: link
+    force: yes
+  

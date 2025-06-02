@@ -1,22 +1,19 @@
-# ####################################################################
-#
-# rke2-create.yaml
-#
-# Ansible playbook to install RKE2
-# Takeover from git: https://github.com/rancherfederal/rke2-ansible
-#
-# Changes
-# 07.04.2025    Thomas Wetzler   Initial file
-#
-# ####################################################################
 ---
-
 - name: Install RKE2 for Rancher
   hosts: all
   become: true
   gather_facts: true
 
+  vars:
+    rke2_token: "dastollstetokenderwelt"
+    rke2_server_ip: "{{ hostvars[groups['all'][0]]['ansible_default_ipv4']['address'] }}"
+    rancher_hostname: "rancher.{{ hostvars[groups['all'][0]]['ansible_default_ipv4']['address'] }}.sslip.io"
+
   tasks:
-    - name: Install RKE2
+    - name: Determine if this host is the primary node
+      set_fact:
+        rke2_is_primary: "{{ inventory_hostname == groups['all'][0] }}"
+
+    - name: Run install role for RKE2 and Rancher
       include_role:
-        name: rke2
+        name: install

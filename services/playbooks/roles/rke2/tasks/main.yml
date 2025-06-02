@@ -7,6 +7,8 @@
   ansible.builtin.package_facts:
     manager: auto
 
+
+
 - name: Set for install method of tarball
   ansible.builtin.set_fact:
     install_method: tarball
@@ -29,7 +31,7 @@
   ansible.builtin.set_fact:
     service_name: rke2-server
   when:
-    - inventory_hostname in groups['rke2_servers']
+    - inventory_hostname in {{ groups['rke2_servers'] | default([]) }}
 
 - name: Set as agent
   ansible.builtin.set_fact:
@@ -63,7 +65,7 @@
     check_node_ready_delay: 2
     check_node_ready_ignore_errors: true
   when:
-    - inventory_hostname in groups['rke2_servers']
+    - inventory_hostname in {{ groups['rke2_servers'] | default([]) }}
 
 - name: Create a list of ready servers
   ansible.builtin.set_fact:
@@ -92,19 +94,19 @@
   when:
     - rke2_manifest_config_directory is defined
     - rke2_manifest_config_directory | length > 0
-    - inventory_hostname in groups['rke2_servers'][0]
+    - inventory_hostname in {{ groups['rke2_servers'] | default([]) }}[0]
 
-# is the ready_servers array is empty, we assume it's a new cluster and use the first server in groups['rke2_servers']
+# is the ready_servers array is empty, we assume it's a new cluster and use the first server in {{ groups['rke2_servers'] | default([]) }}
 - name: Start the first rke2 node
   ansible.builtin.include_tasks: first_server.yml
   when:
-    - inventory_hostname in groups['rke2_servers'][0]
+    - inventory_hostname in {{ groups['rke2_servers'] | default([]) }}[0]
     - ready_servers | length == 0
 
 - name: Save_generated_token.yml
   ansible.builtin.include_tasks: save_generated_token.yml
   vars:
-    token_source_node: "{{ groups['rke2_servers'][0] }}"
+    token_source_node: "{{ {{ groups['rke2_servers'] | default([]) }}[0] }}"
   when:
     - ready_servers | length == 0
 
@@ -122,7 +124,7 @@
 - name: Configure kubectl,crictl,ctr
   ansible.builtin.include_tasks: utilities.yml
   when:
-    - inventory_hostname in groups['rke2_servers']
+    - inventory_hostname in {{ groups['rke2_servers'] | default([]) }}
 
 - name: Include task file add_manifest_addons.yml
   ansible.builtin.include_tasks: add_manifest_addons.yml
@@ -132,4 +134,4 @@
   when:
     - rke2_manifest_config_post_run_directory is defined
     - rke2_manifest_config_post_run_directory | length > 0
-    - inventory_hostname in groups['rke2_servers'][0]
+    - inventory_hostname in {{ groups['rke2_servers'] | default([]) }}[0]

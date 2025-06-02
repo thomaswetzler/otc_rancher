@@ -1,0 +1,4 @@
+rke2_token: "dastollstetokenderwelt"
+rke2_server_ip: "10.66.2.161"
+rke2_is_primary: false
+rancher_hostname: "rancher.10.66.2.161.sslip.io"
