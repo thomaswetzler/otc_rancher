@@ -16,7 +16,7 @@ tosca_definitions_version: alien_dsl_2_0_0
 
 metadata:
   template_name: thomas.nodes.WebServer.Rancher
-  template_version: 0.0.14
+  template_version: 0.0.15
   template_author: Thomas
 
 description: RKE2 for Rancher
